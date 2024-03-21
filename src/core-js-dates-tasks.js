@@ -136,8 +136,11 @@ function isDateInPeriod(date, period) {
  * '1999-01-05T02:20:00.000Z' => '1/5/1999, 2:20:00 AM'
  * '2010-12-15T22:59:00.000Z' => '12/15/2010, 10:59:00 PM'
  */
-function formatDate(/* date */) {
-  throw new Error('Not implemented');
+function formatDate(date) {
+  const dateToFormat = new Date(date);
+  let dateStr = `${dateToFormat.getUTCMonth() + 1}/${dateToFormat.getUTCDate()}/${dateToFormat.getUTCFullYear()}, `;
+  dateStr += dateToFormat.toLocaleTimeString('en-US', { timeZone: 'UTC' });
+  return dateStr;
 }
 
 /**
@@ -152,8 +155,18 @@ function formatDate(/* date */) {
  * 12, 2023 => 10
  * 1, 2024 => 8
  */
-function getCountWeekendsInMonth(/* month, year */) {
-  throw new Error('Not implemented');
+function getCountWeekendsInMonth(month, year) {
+  const lastMonthDay = new Date(year, month, 0);
+  const daysCount = lastMonthDay.getDate();
+  let weekDay = lastMonthDay.getDay();
+  let weekendsCounter = 0;
+  for (let i = daysCount; i >= 1; i -= 1) {
+    if (weekDay === 0 || weekDay === 6) {
+      weekendsCounter += 1;
+    }
+    weekDay = weekDay === 0 ? 6 : weekDay - 1;
+  }
+  return weekendsCounter;
 }
 
 /**
@@ -169,8 +182,10 @@ function getCountWeekendsInMonth(/* month, year */) {
  * Date(2024, 0, 31) => 5
  * Date(2024, 1, 23) => 8
  */
-function getWeekNumberByDate(/* date */) {
-  throw new Error('Not implemented');
+function getWeekNumberByDate(date) {
+  const startYear = new Date(date.getFullYear(), 0, 1);
+  const daysToEndOfWeek = date.getDay() === 0 ? 0 : 7 - date.getDay();
+  return Math.ceil(((date - startYear) / 86400000 + 1 + daysToEndOfWeek) / 7);
 }
 
 /**
